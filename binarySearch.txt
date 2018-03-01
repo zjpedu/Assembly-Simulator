@@ -1,0 +1,127 @@
+#<Python代码：二分查找。对于排好序的序列，查找数列中是否存在某个数，如果存在，则返回该数所在的位置，如果不存在，返回-1000>
+# def binarySearch(arr, start, end, target):
+#     if start >= end  and target != arr[start]:
+#         result = -1000     #表示找不到对应的位置，此时返回-1000
+#         return result
+#     middlePosition = (start+end)//2   #找到中间位置
+#     if target == arr[middlePosition]:
+#         result = middlePosition+1
+#         return result
+#     elif target > arr[middlePosition]:
+#         result = binarySearch(arr, middlePosition+1,end,target)
+#         return result
+#     elif target < arr[middlePosition]:
+#         result = binarySearch(arr,start,middlePosition-1,target)
+#         return result
+# arr = [-100,-23,-1,2,30,90,100]
+# result  = binarySearch(arr,0,len(arr)-1,90)
+# print("二分查找的结果为:",result,end="\n")
+
+
+_data 0,[-100,-23,-1,2,30,90,100]    #给定的搜索序列
+#_data 0,[1,2,3,4,5,6,7]
+move R15,10000
+move sp,R15
+move R2, 0    #序列的首地址，即start值
+move R3, 7    #序列的长度，此变量存放end位置
+sub R3, R3,1   #减1存放end
+#move R4, 2   #存放待查找的元素
+#move R4,-23
+#move R4, 90
+#move R4,-1000
+move R4, -1000
+
+push R4
+push R3
+push R2
+
+call LbinarySearch
+goto Lprint
+
+LbinarySearch:
+push R15
+move R15,sp
+push R2
+push R3
+push R4
+push R6
+push R7
+push R8
+
+load R2, 02(R15)   #获取到start值
+load R3, 03(R15)   #获取到end值
+load R4, 04(R15)   #获取到target值
+
+sle R5, R3, R2     #判断start(R2)与end(R3)的关系
+beqz R5, Lrecursive
+load R6, 00(R2)    #将start位置的值放入到R6中
+sub R7, R6, R4    #
+beqz R7, Lout  #if R7 == 0 则R6 == R4
+move R1, -1000
+goto Lreturn
+
+Lrecursive:
+add R6, R2, R3
+div R6, R6, 2    #R6：middlePosition = (start+end)//2   #找到中间位置
+move R7, R2    #R7表示当前序列的首地址,R7要移动到R6的位置
+
+Lcontinue:
+sub R8, R7, R6
+beqz R8, Lfind
+add R7, R7, 1
+goto Lcontinue
+
+Lfind:
+load R7, 00(R6)       #获取到arr[middlePosition]的值
+sub R8, R7, R4        #比较target与arr[middlePosition]的值
+beqz R8,Lmid
+slt R8, R7, R4
+beqz R8, Lless
+#target > arr[middlePosition]
+
+add R6, R6, 1
+move R2, R6   #mid+1的值赋值给start
+
+push R4
+push R3
+push R2
+call LbinarySearch
+goto Lreturn
+
+
+Lless:
+sub R6, R6, 1
+move R3, R6   #mid-1的值赋值给end
+push R4
+push R3
+push R2
+call LbinarySearch
+goto Lreturn
+
+
+Lmid: 
+add R6, R6, 1
+move R1, R6
+goto Lreturn
+
+
+Lout:
+add R2, R2, 1
+move R1, R2
+
+
+Lreturn:
+pop R8
+pop R7
+pop R6
+pop R5
+pop R4
+pop R3
+pop R2
+move sp,R15
+pop R15
+ret
+
+
+Lprint:
+_pr R1

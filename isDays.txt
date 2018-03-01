@@ -1,0 +1,122 @@
+﻿#<python代码：判断输入的日期是该年的第几天>
+#def isDays(year,month,day):
+#    months = [31,0,31,30,31,30,31,31,30,31,30,31]
+#    sum = 0
+#    if (year % 400 ==0) or (year % 100 !=0 and year % 4 == 0):
+#        months[1] = 29
+#    else:
+#        months[1] = 28
+
+#    for i in range(0,month-1,1):
+#        sum += months[i]
+
+#    sum += day
+#    print("days:",sum)
+
+##isDays(2018,5,5)   #125
+#isDays(2006,1,12)  #71
+
+
+#<汇编代码：判断输入的日期是该年的第几天>
+move R15,10000
+move sp,R15
+
+move R2,2006   #R2表示年
+move R3,1    #R3表示月
+move R4,12   #R4表示日
+
+push R4
+push R3
+push R2
+
+call LisDays
+goto Lprint
+
+LisDays:
+push R15
+move R15,sp
+push R2
+push R3
+push R4
+push R5
+push R6
+push R7
+push R14
+_data 1,[31,0,31,30,31,30,31,31,30,31,30,31]
+move R14,1  #R14表示序列的首地址
+load R2,02(R15)    #获取到年的值
+
+#year % 400 
+div R5,R2,400
+mul R5,R5,400
+sub R5,R2,R5   #R7表示year % 400的值
+
+beqz R5,L0      
+move R5,0     #R7表示year % 400 ==0的真值
+goto Lyear100
+
+L0:
+move R5,1      #R7表示year % 400 ==0的真值
+
+Lyear100:
+#year % 100
+div R6,R2,100
+mul R6,R6,100
+sub R6,R2,R6  
+beqz R6,L1
+move R6,1    
+goto Lyear4
+L1:
+move R6,0
+
+Lyear4:
+#year % 4
+div R7,R2,4
+mul R7,R7,4
+sub R7,R2,R7
+beqz R7,L2
+move R7,0
+goto Lconditions
+L2:
+move R7,1
+
+Lconditions:
+and R7,R6,R7
+or R7,R5,R7
+beqz R7,L28 
+
+L29:
+move R7,29
+store 01(R14),R7   #设置months[1]的值
+
+goto Lfor
+
+L28:
+move R7,28
+store 01(R14),R7  #设置months[1]的值
+
+Lfor:
+sub R3, R3, 1
+sle R2,R3,0
+beqz R2, Lday
+add R1, R1, R4
+goto Lreturn
+Lday:
+load R2,00(R3)    #如果首地址变了不是1，只需要在之前完成一次加首地址的操作即可,比如add R3,R3,基地址
+add R1, R1, R2
+goto Lfor
+
+Lreturn:
+pop R14
+pop R7
+pop R6
+pop R5
+pop R4
+pop R3
+pop R2
+move sp,R15
+pop R15
+ret
+
+Lprint:
+_pr "days:",R1

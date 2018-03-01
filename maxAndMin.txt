@@ -1,0 +1,171 @@
+#<Python代码：递归实现最大值与最小值>
+# def findMaxAndValueRecursive(arr,start,end):
+#     if end == start+1:
+#         if arr[start] >= arr[end]:
+#             return arr[start],arr[end]
+#         else:
+#             return arr[end],arr[start]
+#
+#     if end == start:
+#         return arr[start],arr[end]
+#
+#     middle = (start+end)//2
+#     lmax, lmin = findMaxAndValueRecursive(arr,start,middle)
+#     rmax, rmin = findMaxAndValueRecursive(arr,middle+1,end)
+#
+#     # merge the results
+#     if lmax >= rmax:
+#         max = lmax
+#     else:
+#         max = rmax
+#
+#     if lmin <= rmin:
+#         min = lmin
+#     else:
+#         min = rmin
+#     return max,min
+#
+# arr = [13,19,9,5,12,8,7,4,11,2,6,21]
+# length = len(arr)
+# max, min = findMaxAndValueRecursive(arr,0,length-1)
+# print ("Max:", max)
+# print ("Min:", min)
+
+
+#<汇编代码：递归实现最大值与最小值>
+#_data 0,[13,19,9,5,12,8,7,4,11,2,6,21]   #error
+#_data 0,[13,19,9,5,12,8,7,4,11,2,21]  #error
+#_data 0,[5,4,3,2,18]    #error
+#_data 0,[5,4,3,2,1]    #error
+#_data 0,[5,4,3,2]       #success
+#_data 0,[2,3,4,5]         #success
+#_data 0,[2,1]         #success
+#_data 0,[2]           #success
+_data 0,[2,1,3]       #success
+#_data 0,[1,5,19]      #success
+
+move R15,10000
+move sp,R15
+move R2, 0     #序列的首地址，即start值
+move R3, 3     #序列的长度，此变量存放end位置
+sub R3, R3,1   #减1存放end
+
+push R3
+push R2
+call Lfind
+goto Lprint
+
+Lfind:
+push R15
+move R15,sp
+push R2    #start
+push R3    #end
+push R4    #存放R2地址处的值
+push R5    #存放R3地址处的值
+push R6    #存放start+1的值
+push R7    #存放中间地址
+push R8    #存放第一次递归调用之后的最大值
+push R9    #存放第一次递归调用之后的最小值
+push R10   #存放第二次递归调用之后的最大值
+push R11   #存放第二次递归调用之后的最小值
+push R14   #标志位寄存器，用于存放判断结果
+
+load R2, 02(R15)   #获取到start开始地址
+load R3, 03(R15)   #获取到end结束地址
+
+add R6, R2, 1
+sub R14, R6, R3   #判断end与start+1的关系
+beqz R14, Lout1
+#说明end != start+1
+sub R14,R2,R3   #判断end与start的关系
+beqz R14, Lout3
+#说明end != start，此时，需要递归的执行
+
+add R7, R2, R3
+div R7, R7,2   #获取到middle位置
+
+#_pr "first:",R7
+push R7      #将middle压入栈中
+push R2      #将start压入栈中
+call Lfind   #调用findMaxAndValueRecursive(arr,start,middle)
+move R8, R0  #将第一次递归调用的最大值存入R8中
+move R9, R1  #将第一次递归调用的最小值存入R9中
+#_pr "R8:",R8
+#_pr "R9:",R9
+
+#_pr "second:",R7 
+add R7, R7,1   #得到middle+1的值
+push R3        #将end位置压入栈中
+push R7        #将middle+1压入栈中
+call Lfind     #调用findMaxAndValueRecursive(arr,middle+1,end)
+move R10, R0   #将第二次递归调用的最大值存入R10中
+move R11, R1   #将第二次递归调用的最小值存入R11中
+#_pr "R10:",R10
+#_pr "R11:",R11
+
+#merge代码
+sle R14, R8, R10
+beqz R14, Lmerge1
+move R0, R10
+sle R14, R9, R11
+beqz R14, Lmerge3
+move R1, R9
+goto Lreturn
+
+Lout1:    #end==start+1
+load R4, 00(R2)   #获取arr[start]的值
+load R5, 00(R3)   #获取arr[end]的值
+
+sle R14, R4, R5   #判断arr[start]与arr[end]的关系
+beqz R14, Lout2
+move R0, R5
+move R1, R4
+goto Lreturn
+
+Lout2:
+move R0, R4
+move R1, R5
+goto Lreturn
+
+Lout3:
+load R4, 00(R2)   #获取arr[start]的值
+load R5, 00(R2)   #获取arr[end]的值
+move R0, R4
+move R1, R5
+goto Lreturn
+
+Lmerge1:
+move R0, R8
+sle R14, R9, R11
+beqz R14, Lmerge2
+move R1, R9
+goto Lreturn
+
+Lmerge2:
+move R1, R11
+goto Lreturn
+
+Lmerge3:
+move R1, R11
+goto Lreturn
+
+Lreturn:
+pop R14
+pop R11
+pop R10
+pop R9
+pop R8
+pop R7
+pop R6
+pop R5
+pop R4
+pop R3
+pop R2
+move sp,R15
+pop R15
+ret
+
+
+Lprint:
+_pr "Max:",R0    #存大值
+_pr "Min:",R1    #存小值

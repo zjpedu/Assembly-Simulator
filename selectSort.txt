@@ -1,0 +1,56 @@
+#<Python代码：完成一组序列的选择排序，使得序列按照从小到大的顺序排列>
+##arr = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+#arr = [8,10,7,16,10,3,9,7,20,2]
+#arrLength = len(arr)
+#for i in range(0,arrLength,1):
+#    min = arr[i]
+#    for j in range(i+1,arrLength,1):
+#        if min > arr[j]:
+#            min,arr[j] = arr[j],min   #交换两个数
+#        else:
+#            continue
+#    arr[i] = min
+#for i in range(0, arrLength, 1):
+#    print(arr[i], end=" ")
+
+
+#<汇编代码：完成一组序列的选择排序，使得序列按照从小到大的顺序排列>
+_data 0,[8,10,7,16,10,3,9,7,20,2]
+move R2,10  #序列长度
+
+move R3,0  #R3 = i
+sub R2,R2,1
+Lfor_i:
+slt R4,R3,R2
+beqz R4,Lpr
+load R5,00(R3)  #R5 = min;min = arr[i]
+
+move R6,R3  #R6 = j
+
+Lfor_j:
+add R6,R6,1  #j从i+1开始
+slt R10,R6,R2
+xor R10,R10,1
+load R7,00(R6)  #R7 = arr[j]
+sle R8,R7,R5
+beqz R8,Lfor_j
+store 00(R6),R5
+load R9,00(R6)
+move R5,R7   #min = arr[j]
+beqz R10,Lfor_j
+
+Lcopy:
+store 00(R3),R5
+add R3,R3,1
+goto Lfor_i
+
+Lpr:
+move R11,0   #循环打印中的i
+Lprint:
+slt R12,R11,R2
+load R1,00(R11)
+_pr R1
+add R11,R11,1
+xor R12,R12,1
+beqz R12,Lprint
+

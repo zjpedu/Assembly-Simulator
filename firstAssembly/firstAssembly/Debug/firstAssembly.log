@@ -1,0 +1,14 @@
+﻿生成启动时间为 2018/5/22 20:41:47。
+     1>项目“C:\Users\朱君鹏\Desktop\firstAssembly\firstAssembly\firstAssembly.vcxproj”在节点 2 上(Build 个目标)。
+     1>_MASM:
+         Assembling first.asm...
+         cmd.exe /C "C:\temp\AppData\Local\Temp\tmpd203fe49ce614826abceb95d051a508b.cmd"
+         ml.exe /c /nologo /Zf /Zi /Fo"Debug\first.obj" /I "D:\masm32\include" /W3 /errorReport:prompt  /Tafirst.asm
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\朱君鹏\Desktop\firstAssembly\Debug\firstAssembly.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\masm32\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\朱君鹏\Desktop\firstAssembly\Debug\firstAssembly.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /ENTRY:"main" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\朱君鹏\Desktop\firstAssembly\Debug\firstAssembly.lib" /MACHINE:X86 Debug\first.obj
+         firstAssembly.vcxproj -> C:\Users\朱君鹏\Desktop\firstAssembly\Debug\firstAssembly.exe
+     1>已完成生成项目“C:\Users\朱君鹏\Desktop\firstAssembly\firstAssembly\firstAssembly.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.07

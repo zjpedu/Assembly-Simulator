@@ -1,0 +1,73 @@
+#<python代码：递归函数调用>
+#def acc(n,a0,d):
+#    if n == 1:
+#        return a0
+#    else:
+#        return(acc(n-1,a0,d)+(a0+d*(n-1)))   #递归调用累加函数 
+#n = 5     #需要累加的数的个数
+#a0 = 1    #第一个数
+#d = 1     #公差为1
+#print(acc(n,a0,d))
+
+
+#<汇编代码：递归函数调用>
+move R15,10000   #R15表示fp
+move sp,R15    #使初始sp和fp指向同一位置
+
+#move R2,6      #对应于python代码中的n
+#move R3,2      #对应于python代码中的a0
+#move R4,5      #对应于python代码中的d
+
+move R2,5      #对应于python代码中的n
+move R3,1      #对应于python代码中的a0
+move R4,1      #对应于python代码中的d
+
+push R4    #传递参数d
+push R3    #传递参数a0
+push R2    #传递参数n
+
+_pause
+
+call Lacc
+goto Lprint
+
+Lacc:
+push R15     #将旧的R15入栈
+move R15,sp  #新的R15值为当前sp
+
+push R2      #设置局部变量入栈
+push R3      #设置局部变量R3入栈
+push R4      #设置局部变量R4入栈
+push R5      #存放累加计算结果
+
+load R2, 02(R15)   #设置局部变量R2的值
+load R3, 03(R15)   #设置局部变量R3的值
+load R4, 04(R15)   #设置局部变量R4的值
+
+sle R5,R2,1     #比较R2是否小于等于1，如果是，则R5为1，如果为0，继续递归执行
+beqz R5,L1     
+add R1,R1,R3    #将R3的值加到R1上，R1保存最后的累加结果
+goto Lreturn
+
+L1:
+sub R2,R2,1      # 将计数器n的值减1
+mul R5, R2, R4   # 计算d*(n-1)
+add R5, R3, R5   # 计算a0+d*(n-1),将计算结果写到R6中
+add R1, R1, R5   # 计算每次累加的结果，并将结果保存在R1中
+
+push R4    #传递参数d
+push R3    #传递参数a0
+push R2    #传递参数n
+call Lacc   #调用累加函数，计算acc(n-1,a0,d)的值
+
+Lreturn:
+pop R5
+pop R4
+pop R3
+pop R2
+move sp, R15
+pop R15
+ret
+
+Lprint:
+_pr R1

@@ -1,0 +1,18 @@
+#<统计一个二进制数中有几个1>
+move R1,7
+move R2,0 #计数
+clz R3,R1
+move R4,64
+sub R5,R4,R3
+
+L1:
+and R7,R1,1
+beqz R7,L2
+add R2,R2,1
+L2:
+shiftr R1,R1,1
+sub R5,R5,1
+sle R6,R5,0
+beqz R6,L1
+L3:
+_pr R2

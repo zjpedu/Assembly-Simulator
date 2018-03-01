@@ -1,0 +1,47 @@
+#<汇编代码：交换两个数>
+_data 10,[5,6]
+move R15,10000   #R15表示fp
+move sp,R15    #使初始sp和fp指向同一位置
+
+move R2,10   
+move R3,11
+
+push R3
+push R2
+call Lswap
+goto Lprint
+
+Lswap:
+push R15       #将旧的fp值存入栈内
+move R15,sp    # 新的fp等于sp
+push R2    #表示5的地址
+push R3    #表示6的地址
+push R4 
+push R5
+push R6    #temp    
+load R2, 02(R15)
+load R3, 03(R15)
+
+load R4, 00(R2)   #取出R2地址的值
+load R5, 00(R3)   #取出R3地址的值
+
+move R6,R4
+move R4,R5
+move R5,R6
+
+store 00(R2),R4
+store 00(R3),R5
+
+Lreturn:
+pop R6
+pop R5
+pop R4
+pop R3        #返回初始的R3
+pop R2        #返回初始的R2
+move sp,R15   #sp = fp
+pop R15       #重设fp的值，成为旧的fp
+ret           #pop pc
+
+Lprint:
+_pr (10)
+_pr (11)

@@ -1,0 +1,56 @@
+# <Python代码：完成一组序列的插入排序,使得序列按照从小到大的顺序排列>
+## arr = [9,8,7,6,5,9,3,2,1]
+#arr = [8, 10, 7, 16, 10, 3, 9, 7, 20, 2]  #给定的待排序数组
+#arrLength = len(arr)   #求出数组的长度
+#for i in range(1,arrLength):    #从第二个元素开始遍历，例子中也就是从10开始往后遍历
+#    min = arr[i]         # 假设最小值
+#    k = i;     #设置哨兵，用于监视真正最小值的正确位置
+#    for j in range(i-1,-1,-1):       #接着从[0,i-1]的位置上与min比较
+#        if min < arr[j]:             #如果min较小
+#            arr[j+1] = arr[j]        #arr[j] 向后走一个位置
+#            k = j                    #同时哨兵向前走一个位置
+#        else:
+#            break
+#    arr[k] = min    #循环结束将min放在正确的位置
+#for i in range(0,arrLength,1):    #循环输出排序好的数组
+#    print (arr[i], end  = " ")
+
+
+#<汇编代码：完成一组序列的插入排序,使得序列按照从小到大的顺序排列>
+_data 0,[9,8,7,6,5,4,3,2,1]
+move R2,9   #序列的长度
+
+move R3,1     #R3=i,从第二个元素开始遍历
+Lfor_i:
+sle R4,R3,R2    #for i in range(1,arrLength)       
+load R6,00(R3)     #R6存储最小值，假设最小值
+move R7,R3         #设置哨兵，用于监视最小值的正确位置,R7 = k
+beqz R4,Lpr
+
+sub R8,R3,1   #R8 = j
+Lfor_j:
+slt R9,R8,0    #for j in range(i-1,-1,-1)
+load R10,00(R8)  #R10 = arr[j]
+slt R11,R6,R10    #if min < arr[j]
+beqz R11,Lcopy
+store 01(R8),R10
+move R7,R8
+sub R8,R8,1   #将j减1
+#xor R9,R9,1
+beqz R9,Lfor_j
+Lcopy:
+store 00(R7),R6
+add R3,R3,1   #将i加1
+goto Lfor_i
+
+Lpr:
+move R0,1     #输出循环中的i
+Lprint:
+slt R12,R0,R2
+load R1,00(R0)
+add R0,R0,1
+_pr R1
+xor R12,R12,1
+beqz R12,Lprint
+
+
