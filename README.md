@@ -6,7 +6,7 @@
 op = ["load", "move", "add", "sub", "shiftl", "shiftr", "store", "slt", "sle", "beqz", "goto", "and", "or", "xor", "call", "ret", "clz", "push",
       "pop", "_pr","div","mul","_data"]
 ```
-## <center>**使用Visual Studio 2013编写并执行汇编语言**</center>
+## <center>**使用Visual Studio 编写并执行汇编语言**</center>
 
 ![Github stars](https://img.shields.io/github/stars/Ethanzjp/Assembly-Simulator.svg) ![github language](https://img.shields.io/badge/language-assembly-green.svg) ![](https://img.shields.io/github/license/Ethanzjp/Assembly-Simulator.svg) ![Github stars](https://img.shields.io/github/forks/Ethanzjp/Assembly-Simulator.svg)
 
